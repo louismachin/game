@@ -14,7 +14,6 @@ function connect() {
         const data = JSON.parse(event.data)
         console.log('Received:', data)
         const currentTime = performance.now()
-        
         switch(data.type) {
             case 'welcome':
                 myPlayerId = data.player_id
@@ -27,9 +26,18 @@ function connect() {
             case 'player_joined':
                 players[data.player.id] = createPlayer(data.player.id, data.player.x, data.player.y)
                 break
+            case 'player_stuck':
+                if (data.player.id === myPlayerId) {
+                    // Clear pending flag
+                    players[data.player.id].pendingMove = false
+                }
             case 'player_moved':
                 const movingPlayer = players[data.player.id]
                 if (movingPlayer) {
+                    if (data.player.id === myPlayerId) {
+                        // Clear pending flag
+                        movingPlayer.pendingMove = false
+                    }
                     startPlayerMovement(
                         movingPlayer,
                         movingPlayer.visualX,

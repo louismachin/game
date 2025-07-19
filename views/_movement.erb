@@ -28,11 +28,12 @@ function updatePlayerAnimations(currentTime) {
 
 function handleContinuousMovement(currentTime) {
     if (keysPressed.size === 0) return
-    
     const player = players[myPlayerId]
     if (!player) return
-
-    // Check if enough time has passed for next move
+    
+    // Add this check - wait for server confirmation
+    if (player.pendingMove) return
+    
     const timeSinceLastMove = currentTime - lastMoveTime
     const canMove = !player.isMoving || timeSinceLastMove >= MOVE_REPEAT_DELAY
     
@@ -67,6 +68,11 @@ function startPlayerMovement(player, fromX, fromY, toX, toY, currentTime) {
 
 function move(direction) {
     if (ws && ws.readyState === WebSocket.OPEN) {
+        const player = players[myPlayerId]
+        if (player && player.pendingMove) return // Prevent spam
+        
+        if (player) player.pendingMove = true
+        
         ws.send(JSON.stringify({
             type: 'move',
             direction: direction

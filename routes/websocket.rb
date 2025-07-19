@@ -28,24 +28,39 @@ get '/websocket' do
         direction = data['direction']
         player = $players[player_id]
 
+        new_x, new_y = player[:x], player[:y]
+
         case direction
-        when 'up'    then player[:y] -= 1
-        when 'down'  then player[:y] += 1
-        when 'left'  then player[:x] -= 1
-        when 'right' then player[:x] += 1
+        when 'up'    then new_y -= 1
+        when 'down'  then new_y += 1
+        when 'left'  then new_x -= 1
+        when 'right' then new_x += 1
         end
 
         # Keep in bounds
-        player[:x] = [0, [15, player[:x]].min].max
-        player[:y] = [0, [15, player[:y]].min].max
+        new_x = [0, [15, new_x].min].max
+        new_y = [0, [15, new_y].min].max
 
-        # Tell everyone about the move
-        broadcast_to_all({
-          type: 'player_moved',
-          player: player
-        })
+        valid_movement = true
 
-        puts "#{player_id} moved to (#{player[:x]}, #{player[:y]})"
+        # Test collision
+        if new_x == 4 && new_y == 4
+          valid_movement = false
+        end
+
+        if valid_movement
+          player[:x], player[:y] = new_x, new_y
+          broadcast_to_all({
+            type: 'player_moved',
+            player: player
+          })
+          puts "#{player_id} moved to (#{player[:x]}, #{player[:y]})"
+        else
+          broadcast_to_all({
+            type: 'player_stuck',
+            player: player
+          })
+        end
       end
     end
     

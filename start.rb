@@ -6,7 +6,7 @@ APP_ROOT = File.expand_path(__dir__)
 
 set :bind, '0.0.0.0'
 set :port, 4568
-set :protection, :except => [:host_authorization]
+set :protection, :except => :host_authorization
 
 before do
   puts "=== REQUEST DEBUG ==="

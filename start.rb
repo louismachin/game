@@ -8,6 +8,7 @@ configure do
   set :bind, '0.0.0.0'
   set :port, 4568
   set :environment, :production
+  set :host_authorization, { permitted_hosts: [] }
 end
 
 before do

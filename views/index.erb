@@ -3,16 +3,35 @@
 <head></head>
 
 <body>
+    <div id="game-container">
+        <canvas id="mask-canvas" width="512" height="512" 
+            style="position: absolute; top: 0; left: 0; z-index: 1;">
+        </canvas>
+        <canvas id="sprite-canvas" width="512" height="512" 
+            style="position: absolute; top: 0; left: 0; z-index: 2;">
+        </canvas>
+    </div>
+
     <%= erb :_game %>
 </body>
 
 <style>
-    #gameContainer {
+    body {
         display: flex;
         width: 100vw;
         height: 100vh;
+        overflow: hidden;
         align-items: center;
         justify-content: center;
+    }
+
+    #game-container {
+        position: relative;
+        width: 512px;
+        height: 512px;
+        border: 2px solid #444;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        background-color: #000;
     }
 </style>
 </html>

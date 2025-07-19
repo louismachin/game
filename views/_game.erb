@@ -1,18 +1,20 @@
-<div id="gameContainer">
-    <canvas id="gameCanvas" width="640" height="640"></canvas>
-</div>
-
 <script>
+const DEBUG = false
 // Game configuration
-const TILE_SIZE = 40
+const TILE_SIZE = 32
 const ROOM_WIDTH = 16 // tiles
 const ROOM_HEIGHT = 16 // tiles
 
 // Canvas setup
-const canvas = document.getElementById('gameCanvas')
-const ctx = canvas.getContext('2d')
-canvas.width = ROOM_WIDTH * TILE_SIZE
-canvas.height = ROOM_HEIGHT * TILE_SIZE
+const maskCanvas = document.getElementById('mask-canvas')
+const maskCtx = maskCanvas.getContext('2d')
+maskCanvas.width = ROOM_WIDTH * TILE_SIZE
+maskCanvas.height = ROOM_HEIGHT * TILE_SIZE
+
+const spriteCanvas = document.getElementById('sprite-canvas')
+const spriteCtx = spriteCanvas.getContext('2d')
+spriteCanvas.width = ROOM_WIDTH * TILE_SIZE
+spriteCanvas.height = ROOM_HEIGHT * TILE_SIZE
 
 // WebSocket variables
 let ws
@@ -47,7 +49,7 @@ function createPlayer(id, x, y) {
 function gameLoop(currentTime) {
     handleContinuousMovement(currentTime)
     updatePlayerAnimations(currentTime)
-    drawRoom()
+    clearSpriteCanvas()
     Object.values(players).forEach(player => {
         const isMyPlayer = player.id === myPlayerId
         drawPlayer(player, isMyPlayer)

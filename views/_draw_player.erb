@@ -12,6 +12,10 @@ function getPlayerColor(playerId) {
     return player_colors[Math.abs(hash) % player_colors.length]
 }
 
+function clearSpriteCanvas() {
+    spriteCtx.clearRect(0, 0, spriteCanvas.width, spriteCanvas.height)
+}
+
 function drawPlayer(player, isMyPlayer = false) {
     // Use visual position for rendering (smooth animation)
     const x = player.visualX * TILE_SIZE
@@ -20,23 +24,23 @@ function drawPlayer(player, isMyPlayer = false) {
     const centerY = y + TILE_SIZE / 2
 
     // Player body
-    ctx.fillStyle = getPlayerColor(player.id)
+    spriteCtx.fillStyle = getPlayerColor(player.id)
     if (isMyPlayer) {
         // Indicator ring for current player
-        ctx.strokeStyle = '#f1c40f'
-        ctx.lineWidth = 3
-        ctx.beginPath()
-        ctx.arc(centerX, centerY, TILE_SIZE * 0.4, 0, 2 * Math.PI)
-        ctx.stroke()
+        spriteCtx.strokeStyle = '#f1c40f'
+        spriteCtx.lineWidth = 3
+        spriteCtx.beginPath()
+        spriteCtx.arc(centerX, centerY, TILE_SIZE * 0.4, 0, 2 * Math.PI)
+        spriteCtx.stroke()
     }
     
-    ctx.beginPath()
-    ctx.arc(centerX, centerY, TILE_SIZE * 0.3, 0, 2 * Math.PI)
-    ctx.fill()
+    spriteCtx.beginPath()
+    spriteCtx.arc(centerX, centerY, TILE_SIZE * 0.3, 0, 2 * Math.PI)
+    spriteCtx.fill()
     
     // Player ID label
-    ctx.fillStyle = '#2c3e50'
-    ctx.font = '10px monospace'
-    ctx.textAlign = 'center'
-    ctx.fillText(player.id, centerX, y - 5)
+    spriteCtx.fillStyle = '#2c3e50'
+    spriteCtx.font = '10px monospace'
+    spriteCtx.textAlign = 'center'
+    spriteCtx.fillText(player.id, centerX, y - 5)
 }

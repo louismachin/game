@@ -1,0 +1,56 @@
+// WebSocket connection
+function connect() {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const wsUrl = `${protocol}//${window.location.host}/websocket`
+    
+    try {
+        ws = new WebSocket(wsUrl)
+    } catch (e) {
+        console.log('WebSocket not available.')
+        return
+    }
+
+    ws.onmessage = function(event) {
+        const data = JSON.parse(event.data)
+        console.log('Received:', data)
+        const currentTime = performance.now()
+        
+        switch(data.type) {
+            case 'welcome':
+                myPlayerId = data.player_id
+                players = {}
+                // Create enhanced player objects
+                Object.entries(data.all_players).forEach(([id, playerData]) => {
+                    players[id] = createPlayer(id, playerData.x, playerData.y)
+                })
+                break;
+            case 'player_joined':
+                players[data.player.id] = createPlayer(data.player.id, data.player.x, data.player.y)
+                break
+            case 'player_moved':
+                const movingPlayer = players[data.player.id]
+                if (movingPlayer) {
+                    startPlayerMovement(
+                        movingPlayer,
+                        movingPlayer.visualX,
+                        movingPlayer.visualY,
+                        data.player.x,
+                        data.player.y,
+                        currentTime
+                    )
+                }
+                break;
+            case 'player_left':
+                delete players[data.player_id]
+                break
+        }
+    };
+    
+    ws.onclose = function() {
+        setTimeout(connect, 3000)
+    }
+    
+    ws.onerror = function(error) {
+        console.error('WebSocket error:', error)
+    }
+}

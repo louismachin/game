@@ -1,0 +1,75 @@
+// Movement configuration
+const MOVE_DURATION = 200
+const MOVE_REPEAT_DELAY = 150
+
+// Animation variables
+let animationFrameId
+
+function updatePlayerAnimations(currentTime) {
+    Object.values(players).forEach(player => {
+        if (player.isMoving) {
+            const elapsed = currentTime - player.moveStartTime
+            let progress = elapsed / MOVE_DURATION
+            if (progress >= 1) {
+                // Animation complete
+                progress = 1
+                player.isMoving = false
+                player.visualX = player.x
+                player.visualY = player.y
+            } else {
+                // Update visual position
+                const easedProgress = easeOutQuad(progress)
+                player.visualX = lerp(player.moveFromX, player.x, easedProgress)
+                player.visualY = lerp(player.moveFromY, player.y, easedProgress)
+            }
+        }
+    });
+}
+
+function handleContinuousMovement(currentTime) {
+    if (keysPressed.size === 0) return
+    
+    const player = players[myPlayerId]
+    if (!player) return
+
+    // Check if enough time has passed for next move
+    const timeSinceLastMove = currentTime - lastMoveTime
+    const canMove = !player.isMoving || timeSinceLastMove >= MOVE_REPEAT_DELAY
+    
+    if (!canMove) return
+
+    let direction = null
+
+    if (keysPressed.has('ArrowUp') || keysPressed.has('w') || keysPressed.has('W')) {
+        direction = 'up'
+    } else if (keysPressed.has('ArrowDown') || keysPressed.has('s') || keysPressed.has('S')) {
+        direction = 'down'
+    } else if (keysPressed.has('ArrowLeft') || keysPressed.has('a') || keysPressed.has('A')) {
+        direction = 'left'
+    } else if (keysPressed.has('ArrowRight') || keysPressed.has('d') || keysPressed.has('D')) {
+        direction = 'right'
+    }
+
+    if (direction) {
+        move(direction)
+        lastMoveTime = currentTime
+    }
+}
+
+function startPlayerMovement(player, fromX, fromY, toX, toY, currentTime) {
+    player.moveFromX = fromX
+    player.moveFromY = fromY
+    player.x = toX
+    player.y = toY
+    player.isMoving = true
+    player.moveStartTime = currentTime
+}
+
+function move(direction) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'move',
+            direction: direction
+        }))
+    }
+}

@@ -1,0 +1,28 @@
+document.addEventListener('keydown', (event) => {
+    const key = event.key
+    const movementKeys = [
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 
+        'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'
+    ]
+    if (movementKeys.includes(key)) {
+        event.preventDefault()
+        // Add key to pressed set
+        keysPressed.add(key)
+        // If this is first press, move immediately
+        if (keysPressed.size === 1) {
+            const currentTime = performance.now()
+            handleContinuousMovement(currentTime)
+        }
+    }
+})
+
+document.addEventListener('keyup', (event) => {
+    const key = event.key
+    // Remove key from pressed set
+    keysPressed.delete(key)
+})
+
+// Handle window focus loss (stop movement when window loses focus)
+window.addEventListener('blur', () => {
+    keysPressed.clear()
+})

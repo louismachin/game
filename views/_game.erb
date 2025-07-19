@@ -1,0 +1,68 @@
+<div id="gameContainer">
+    <canvas id="gameCanvas" width="640" height="640"></canvas>
+</div>
+
+<script>
+// Game configuration
+const TILE_SIZE = 40
+const ROOM_WIDTH = 16 // tiles
+const ROOM_HEIGHT = 16 // tiles
+
+// Canvas setup
+const canvas = document.getElementById('gameCanvas')
+const ctx = canvas.getContext('2d')
+canvas.width = ROOM_WIDTH * TILE_SIZE
+canvas.height = ROOM_HEIGHT * TILE_SIZE
+
+// WebSocket variables
+let ws
+let myPlayerId
+let players = {}
+
+// Input handling
+let keysPressed = new Set()
+let lastMoveTime = 0
+let currentDirection = null
+
+// Enhanced player object with smooth movement
+function createPlayer(id, x, y) {
+    return {
+        id: id,
+        // Target position (where the player should end up)
+        x: x,
+        y: y,
+        // Current visual position (for smooth animation)
+        visualX: x,
+        visualY: y,
+        // Animation state
+        isMoving: false,
+        moveStartTime: 0,
+        moveFromX: x,
+        moveFromY: y
+    };
+}
+
+// Main game loop
+function gameLoop(currentTime) {
+    handleContinuousMovement(currentTime)
+    updatePlayerAnimations(currentTime)
+    drawRoom()
+    Object.values(players).forEach(player => {
+        const isMyPlayer = player.id === myPlayerId
+        drawPlayer(player, isMyPlayer)
+    })
+    animationFrameId = requestAnimationFrame(gameLoop)
+}
+
+
+<%= erb :_draw_room %>
+<%= erb :_draw_player %>
+<%= erb :_movement %>
+<%= erb :_input %>
+<%= erb :_maths %>
+<%= erb :_connect %>
+
+// Initialize game
+connect()
+gameLoop(performance.now())
+</script>

@@ -1,0 +1,9 @@
+// Smooth interpolation function
+function lerp(start, end, t) {
+    return start + (end - start) * t;
+}
+
+// Easing function for more natural movement
+function easeOutQuad(t) {
+    return t * (2 - t);
+}

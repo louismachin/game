@@ -22,6 +22,7 @@ function connect() {
                 Object.entries(data.all_players).forEach(([id, playerData]) => {
                     players[id] = createPlayer(id, playerData.x, playerData.y)
                 })
+                roomTiles = data.room.tiles
                 break
             case 'player_joined':
                 players[data.player.id] = createPlayer(data.player.id, data.player.x, data.player.y)

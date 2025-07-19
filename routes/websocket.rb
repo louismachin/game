@@ -6,13 +6,14 @@ get '/websocket' do
       puts "Client connected: #{client_id}"
       # Create new player
       player_id = "player_#{rand(1000)}"
-      $players[player_id] = { x: 5, y: 5, id: player_id }
+      $players[player_id] = { x: 5, y: 5, id: player_id, room_id: 0 }
       $clients[client_id] = { ws: ws, player_id: player_id }
       ws.send(JSON.generate({
         type: 'welcome',
         player_id: player_id,
         position: $players[player_id],
-        all_players: $players
+        all_players: $players,
+        room: get_room(0),
       }))
       broadcast_to_others(client_id, {
         type: 'player_joined',
@@ -38,13 +39,14 @@ get '/websocket' do
         end
 
         # Keep in bounds
+        room = get_room(player[:room_id])
         new_x = [0, [15, new_x].min].max
         new_y = [0, [15, new_y].min].max
 
         valid_movement = true
 
         # Test collision
-        if new_x == 4 && new_y == 4
+        unless room[:tiles][new_y][new_x] == 0
           valid_movement = false
         end
 

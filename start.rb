@@ -24,6 +24,7 @@ $clients = {}
 $players = {}
 
 require_relative './helpers/broadcast'
+require_relative './helpers/room'
 
 require_relative './routes/index'
 require_relative './routes/websocket'

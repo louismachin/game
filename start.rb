@@ -8,6 +8,15 @@ set :bind, '0.0.0.0'
 set :port, 4568
 set :protection, :except => [:host_authorization]
 
+before do
+  puts "=== REQUEST DEBUG ==="
+  puts "Host: #{request.host}"
+  puts "User-Agent: #{request.user_agent}"
+  puts "All headers:"
+  request.env.each {|k,v| puts "  #{k}: #{v}" if k.start_with?('HTTP_')}
+  puts "===================="
+end
+
 $clients = {}
 $players = {}
 

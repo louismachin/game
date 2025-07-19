@@ -1,4 +1,15 @@
 require 'sinatra'
+
+module Rack
+  module Protection
+    class HostAuthorization
+      def call(env)
+        @app.call(env)
+      end
+    end
+  end
+end
+
 require 'faye/websocket'
 require 'json'
 

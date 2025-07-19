@@ -6,7 +6,8 @@ $tile_cache = {}
 $tile_definitions = {
   0 => '/tile/tiny_dungeon_world/8/5', # Grass
   1 => '/tile/tiny_dungeon_world/8/6', # Path
-  2 => '/tile/tiny_dungeon_world/12/5', # Flower
+  2 => '/tile/tiny_dungeon_world/8/16', # Stones
+  3 => '/tile/tiny_dungeon_world/11/5', # Flower
 }
 
 def extract_tile(sheet, tile_x, tile_y, scale_factor = 2)

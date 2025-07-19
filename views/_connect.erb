@@ -2,7 +2,7 @@
 function connect() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const wsUrl = `${protocol}//${window.location.host}/websocket`
-    
+
     try {
         ws = new WebSocket(wsUrl)
     } catch (e) {
@@ -10,7 +10,7 @@ function connect() {
         return
     }
 
-    ws.onmessage = function(event) {
+    ws.onmessage = (event) => {
         const data = JSON.parse(event.data)
         console.log('Received:', data)
         const currentTime = performance.now()
@@ -22,15 +22,10 @@ function connect() {
                 Object.entries(data.all_players).forEach(([id, playerData]) => {
                     players[id] = createPlayer(id, playerData.x, playerData.y)
                 })
-                break;
+                break
             case 'player_joined':
                 players[data.player.id] = createPlayer(data.player.id, data.player.x, data.player.y)
                 break
-            case 'player_stuck':
-                if (data.player.id === myPlayerId) {
-                    // Clear pending flag
-                    players[data.player.id].pendingMove = false
-                }
             case 'player_moved':
                 const movingPlayer = players[data.player.id]
                 if (movingPlayer) {
@@ -48,17 +43,22 @@ function connect() {
                     )
                 }
                 break;
+            case 'player_stuck':
+                if (data.player.id === myPlayerId) {
+                    // Clear pending flag
+                    players[data.player.id].pendingMove = false
+                }
             case 'player_left':
                 delete players[data.player_id]
                 break
         }
     };
     
-    ws.onclose = function() {
+    ws.onclose = () => {
         setTimeout(connect, 3000)
     }
     
-    ws.onerror = function(error) {
+    ws.onerror = (error) => {
         console.error('WebSocket error:', error)
     }
 }

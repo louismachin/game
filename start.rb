@@ -1,15 +1,4 @@
 require 'sinatra'
-
-module Rack
-  module Protection
-    class HostAuthorization
-      def call(env)
-        @app.call(env)
-      end
-    end
-  end
-end
-
 require 'faye/websocket'
 require 'json'
 
@@ -18,8 +7,7 @@ APP_ROOT = File.expand_path(__dir__)
 configure do
   set :bind, '0.0.0.0'
   set :port, 4568
-  disable :protection
-  set :protection, false
+  set :host_authorization, { permitted_hosts: [] }
 end
 
 before do

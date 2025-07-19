@@ -7,7 +7,7 @@ APP_ROOT = File.expand_path(__dir__)
 configure do
   set :bind, '0.0.0.0'
   set :port, 4568
-  set :host_authorization, { permitted_hosts: [] }
+  set :environment, :production
 end
 
 before do

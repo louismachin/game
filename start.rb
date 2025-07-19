@@ -4,12 +4,12 @@ require 'json'
 
 APP_ROOT = File.expand_path(__dir__)
 
-set :bind, '0.0.0.0'
-set :port, 4568
-# set :protection, :host_whitelist => [
-#     'game.louismachin.com', 'localhost', '127.0.0.1'
-# ]
-disable :protection
+configure do
+  set :bind, '0.0.0.0'
+  set :port, 4568
+  disable :protection
+  set :protection, false
+end
 
 before do
   puts "=== REQUEST DEBUG ==="
